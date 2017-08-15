@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+    "http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<!-- struts标签样式，与传统html标签保持一致 -->
+	<constant name="struts.ui.theme" value="simple"/>
+	<!-- 编码 -->
+	<constant name="struts.i18n.encoding" value="utf-8"></constant>
+	<!-- 将对象交给spring管理 -->
+	<constant name="struts.objectFactory" value="spring"></constant>
+	<!-- 开启使用开发模式，详细错误提示 -->
+	<constant name="struts.devMode" value="false" />
+	<!-- 默认后缀名 -->
+	<constant name="struts.action.extension" value="do" />
+	<!-- 最大上传文件大小35M = 1024*35*1000 -->
+	<constant name="struts.multipart.maxSize" value="35840000"></constant>
+	
+	<!-- 微信支付相关配置 -->
+	<include file="wxserverpay/struts-wxserverpay.xml"></include>
+	<!-- 代理商的支付接口 -->
+	<package name="agentpay-package" extends="struts-default" namespace="/agentpay">
+		<action name="payManageForTerminal_*" class="payManageForAgentAction" method="{1}"></action>
+	</package>
+	<!--亿万商的支付接口-->
+	<package name="ewspay-package" extends="struts-default" namespace="/ewserverpay">
+		<action name="alipay_*" class="alipayBarTradePayAction" method="{1}"></action>
+		<action name="alipayQr_*" class="alipayQrTradePayAction" method="{1}"></action>
+		<action name="alipayTwo_*" class="alipayBarTradePayTwoAction" method="{1}"></action>
+		<action name="alipayQrTwo_*" class="alipayQrTradePayTwoAction" method="{1}"></action>
+		<action name="payManage_*" class="payManageAction" method="{1}"></action>
+		<action name="integral_*" class="integralAction" method="{1}"></action>
+		<action name="payManageForTerminal_*" class="payManageForTerminalAction" method="{1}"></action>
+		<action name="payResultAll_*" class="payResultAllAction" method="{1}"></action>
+		<action name="uchangPay_*" class="uchangRouterAction" method="{1}"></action>
+	</package>
+	<!-- uchang 优畅接口-->
+	<!-- <package name="uchang-package" extends="struts-default" namespace="/uchangpay">
+		<action name="uchangPay_*" class="uchangRouterAction" method="{1}"></action>
+	</package> -->
+	
+</struts>
+

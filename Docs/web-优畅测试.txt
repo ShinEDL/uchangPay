@@ -1,0 +1,201 @@
+
+测试代码均在main函数中,直接运行main函数进行测试：
+测试结果：web在参数正确的情况下，能够正常调通优畅接口。
+
+// wechat 
+
+1.小额支付接口
+
+  测试代码：	JSONObject json = new JSONObject();
+		json.put("auth_code", "130146033200806807");
+		json.put("body", "ewsTest");
+		json.put("mch_id", "100015468237");
+		json.put("out_trade_no", "test0002");
+		json.put("spbill_create_ip", "127.0.0.1");
+		json.put("total_fee", 1);
+		json.put("detail", "detail");
+		UchangPayServiceImpl user = new UchangPayServiceImpl();
+		UchangRouterAction uchang = new UchangRouterAction();
+		String baseStr = uchang.getBaseStr(WX_MICROPAY_BASESTR, json);
+		String sign = "";
+		try {
+			sign = uchang.Md5(baseStr, MKEY);
+			json.put("sign", sign);
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		json.put("nonce_str", NONCESTR);
+		String result = user.wxMicropay(json);
+		System.out.println("result: " + result);
+
+   结果：{"return_msg":"OK","openid":"oGVqXs-ULt0Ohb9GpfZYbZ5ZYyfw","is_subscribe":"N","transaction_id":"4100015468237150226910500000001","out_trade_no":"test0002","cash_fee_type":"CNY","return_code":"SUCCESS","nonce_str":"1278f7f3bc4d6f434f63148de17b50f9","result_code":"SUCCESS","bank_type":"CFT","total_fee":"1","attach":[],"mch_id":"100015468237","cash_fee":"1","out_transaction_id":"4005762001201708095335600687","sign":"1015D7C616FC03D8CA64501CA5D68613","trade_type":"MICROPAY","fee_type":"CNY","time_end":"20170809165827"}
+
+2.冲正（撤销）接口
+  
+  测试代码：	JSONObject json = new JSONObject();
+		json.put("mch_id", "100015468237");
+		json.put("out_trade_no", "test0002");
+		UchangPayServiceImpl user = new UchangPayServiceImpl();
+		UchangRouterAction uchang = new UchangRouterAction();
+		String baseStr = uchang.getBaseStr(CANCEL_BASESTR, json);
+		String sign = "";
+		try {
+			sign = uchang.Md5(baseStr, MKEY);
+			json.put("sign", sign);
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		json.put("nonce_str", NONCESTR);
+		String result = user.wxCancel(json);
+		System.out.println("result: " + result);
+
+  结果：{"return_code":"SUCCESS","result_code":"FAIL","err_code":"REVERSE_EXPIRE","err_code_des":"只能对5分钟内的订单进行撤销，请使用退款接口","mch_id":"100015468237","nonce_str":"3c3d120bf343a5282631245bac5b7b1e","sign":"97BD4472CF7D6352418D89577A402CAF"}
+
+3.查询接口
+
+  测试代码：	JSONObject json = new JSONObject();
+		json.put("mch_id", "100015468237");
+		json.put("out_trade_no", "test0002");
+		UchangPayServiceImpl user = new UchangPayServiceImpl();
+		UchangRouterAction uchang = new UchangRouterAction();
+		String baseStr = uchang.getBaseStr(QUERY_BASESTR, json);
+		String sign = "";
+		try {
+			sign = uchang.Md5(baseStr, MKEY);
+			json.put("sign", sign);
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		json.put("nonce_str", NONCESTR);
+		String result = user.wxQuery(json);
+		System.out.println("result: " + result);
+
+  结果：{"nonce_str":"e9878e9466777c26693e5a0c77287e39","result_code":"SUCCESS","openid":"oGVqXs-ULt0Ohb9GpfZYbZ5ZYyfw","transaction_id":"4100015468237150226910500000001","out_trade_no":"test0002","attach":[],"return_code":"SUCCESS","return_msg":"OK","time_end":"20170809165827","cash_fee":"1","total_fee":"1","trade_state":"SUCCESS","out_transaction_id":"4005762001201708095335600687","is_subscribe":"N","bank_type":"CFT","fee_type":"CNY","mch_id":"100015468237","trade_type":"MICROPAY","sign":"296BC6AEBE8ACFE222326520D4269C56"}
+
+
+4.退款接口
+
+  测试代码：	JSONObject json = new JSONObject();
+		json.put("mch_id", "100015468237");
+		json.put("out_trade_no", "test0002");
+		json.put("out_refund_no", "refund_test0002");
+		json.put("total_fee", 1);
+		json.put("refund_fee", 1);
+		json.put("op_user_id", "100015468237");
+		UchangPayServiceImpl user = new UchangPayServiceImpl();
+		UchangRouterAction uchang = new UchangRouterAction();
+		String baseStr = uchang.getBaseStr(WX_REFUND_BASESTR, json);
+		String sign = "";
+		try {
+			sign = uchang.Md5(baseStr, MKEY);
+			json.put("sign", sign);
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		json.put("nonce_str", NONCESTR);
+		String result = user.wxRefund(json);
+		System.out.println("result: " + result);
+
+  结果：{"refund_id":"1000154682372150227001600000001","refund_fee":"1","cash_fee":"1","return_code":"SUCCESS","return_msg":"OK","sign":"2E230A51CC3C66399E877854427B508D","nonce_str":"79ab72eb033de8ad13f4da684edeecad","coupon_refund_count":"0","cash_refund_fee":"1","coupon_refund_fee":"0","total_fee":"1","mch_id":"100015468237","out_transaction_id":"4005762001201708095335600687","result_code":"SUCCESS","out_trade_no":"test0002","refund_channel":[],"transaction_id":"4100015468237150226910500000001","out_refund_no":"refund_test0002"}
+
+
+// alipay
+
+1.刷卡支付
+
+  测试代码：    JSONObject json = new JSONObject();
+		json.put("auth_code", "286158956494482529");
+		json.put("body", "ewsTest");
+		json.put("mch_id", "100015468237");
+		json.put("out_trade_no", "alipaytest0001");
+		json.put("notify_url", ALI_NOTIFY_URL);
+		json.put("spbill_create_ip", "127.0.0.1");
+		json.put("total_fee", 1);
+		json.put("scene", "bar_code");
+
+		UchangPayServiceImpl user = new UchangPayServiceImpl();
+		UchangRouterAction uchang = new UchangRouterAction();
+		String baseStr = uchang.getBaseStr(ALI_MICROPAY_BASESTR, json);
+		String sign = "";
+		try {
+			sign = uchang.Md5(baseStr, MKEY);
+			json.put("sign", sign);
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		json.put("nonce_str", NONCESTR);
+		String result = user.alipayMicropay(json);
+		System.out.println("result: " + result);
+
+结果：
+{"result_code":"SUCCESS","nonce_str":"02d557d2da60caa5ffc45ddb628dc13d","out_transaction_id":"2017080921001004860210147159","transaction_id":"3100015468237150227329100000001","buyer_id":"2088902855015861","trade_type":"MICROPAY","return_code":"SUCCESS","mch_id":"100015468237","time_end":"20170809180813","out_trade_no":"alipaytest0001","total_fee":"1","openid":"135****8560","sign":"583FF873D4305FE947DEA84AFB2098A3"}
+
+2.撤销订单
+  
+  测试代码：	JSONObject json = new JSONObject();
+		json.put("mch_id", "100015468237");
+		json.put("out_trade_no", "alipaytest0001");
+
+		UchangPayServiceImpl user = new UchangPayServiceImpl();
+		UchangRouterAction uchang = new UchangRouterAction();
+		String baseStr = uchang.getBaseStr(CANCEL_BASESTR, json);
+		String sign = "";
+		try {
+			sign = uchang.Md5(baseStr, MKEY);
+			json.put("sign", sign);
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		json.put("nonce_str", NONCESTR);
+		String result = user.alipayCancel(json);
+		System.out.println("result: " + result);
+   结果：{"return_code":"SUCCESS","result_code":"SUCCESS","mch_id":"100015468237","nonce_str":"134510079758cb1d3b94fdf80c95a93a","out_trade_no":"alipaytest0001","retry_flag":"N","action":"refund","sign":"9248BE81025EC0EE7CBFCDFD4C34C168"}
+
+3.查询
+
+  测试代码：	JSONObject json = new JSONObject();
+		json.put("mch_id", "100015468237");
+		json.put("out_trade_no", "alipaytest0002");
+
+		UchangPayServiceImpl user = new UchangPayServiceImpl();
+		UchangRouterAction uchang = new UchangRouterAction();
+		String baseStr = uchang.getBaseStr(QUERY_BASESTR, json);
+		String sign = "";
+		try {
+			sign = uchang.Md5(baseStr, MKEY);
+			json.put("sign", sign);
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		json.put("nonce_str", NONCESTR);
+		String result = user.alipayQuery(json);
+		System.out.println("result: " + result); 
+
+  结果：{"transaction_id":"3100015468237150227369700000002","buyer_id":"2088902855015861","return_code":"SUCCESS","mch_id":"100015468237","nonce_str":"596b7f4dd0b22cf6d5be202fcdb77dd0","out_transaction_id":"2017080921001004860210167257","total_fee":"1","attach":[],"result_code":"SUCCESS","sign":"C59EF5475AA0261FA62B348CDBCD7761","openid":"135****8560","trade_type":"MICROPAY","out_trade_no":"alipaytest0002","trade_state":"TRADE_SUCCESS","time_end":"20170809181458"}
+
+4.退款
+
+  测试代码：	JSONObject json = new JSONObject();
+		json.put("mch_id", "100015468237");
+		json.put("out_trade_no", "alipaytest0002");
+		json.put("out_refund_no", "refund_alipaytest0002");
+		json.put("refund_fee", 1);
+		json.put("op_user_id", "100015468237");
+		
+		UchangPayServiceImpl user = new UchangPayServiceImpl();
+		UchangRouterAction uchang = new UchangRouterAction();
+		String baseStr = uchang.getBaseStr(ALI_REFUND_BASESTR, json);
+		String sign = "";
+		try {
+			sign = uchang.Md5(baseStr, MKEY);
+			json.put("sign", sign);
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		json.put("nonce_str", NONCESTR);
+		String result = user.alipayRefund(json);
+		System.out.println("result: " + result);
+
+  结果：{"result_code":"SUCCESS","total_fee":"1","mch_id":"100015468237","return_code":"SUCCESS","sign":"2E4A4F5BB98764E524126559DCCFAAAF","out_transaction_id":"2017080921001004860210167257","transaction_id":"3100015468237150227369700000002","out_trade_no":"alipaytest0002","out_refund_no":"refund_alipaytest0002","refund_id":"1000154682372150227416200000002","refund_fee":"1","nonce_str":"548ff65cc157adc9ae0e5e7daabad7e6"}
+
+
